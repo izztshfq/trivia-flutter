@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(Quizzler());
+void main() => runApp(Trivia());
 
-class Quizzler extends StatelessWidget {
+class Trivia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,6 +30,17 @@ class _QuizPageState extends State<QuizPage> {
     // Icon(Icons.close, color: Colors.red),
   ];
 
+  List<String> questions = [
+    'A shark can blink its eyes',
+    'Cows sleep standing up',
+    'Nemo is a puffer fish',
+    'Porcupines can float'
+  ];
+
+  List<bool> answers = [true, true, false, true];
+
+  int questionCounter = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +53,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                questions[questionCounter],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -68,7 +79,16 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
+                bool correctAns = answers[questionCounter];
+
+                if (correctAns == true) {
+                  print('correct');
+                } else {
+                  print('false');
+                }
+
                 setState(() {
+                  questionCounter++;
                   scoreKeeper.add(Icon(Icons.check, color: Colors.green));
                 });
               },
@@ -90,6 +110,17 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
+                bool correctAns = answers[questionCounter];
+
+                if (correctAns == false) {
+                  print('correct');
+                } else {
+                  print('false');
+                }
+
+                setState(() {
+                  questionCounter++;
+                });
                 //The user picked false.
               },
             ),
