@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trivia/question.dart';
 
 void main() => runApp(Trivia());
 
@@ -30,14 +31,12 @@ class _QuizPageState extends State<QuizPage> {
     // Icon(Icons.close, color: Colors.red),
   ];
 
-  List<String> questions = [
-    'A shark can blink its eyes',
-    'Cows sleep standing up',
-    'Nemo is a puffer fish',
-    'Porcupines can float'
+  List<Question> questionBank = [
+    Question(question: 'A shark can blink its eyes', answer: true),
+    Question(question: 'Cows sleep standing up', answer: true),
+    Question(question: 'Nemo is a puffer fish', answer: false),
+    Question(question: 'Porcupines can float', answer: true)
   ];
-
-  List<bool> answers = [true, true, false, true];
 
   int questionCounter = 0;
 
