@@ -5,8 +5,10 @@
 - There are 12 existing questions in the question bank
 - Question can be added in
  ``` lib/quiz_brain.dart ```
- by instantiating
-```Question(question: 'question here...', answer: true)```
+```dart
+// Instantiate new question object
+Question(question: 'Question text here', answer: true)
+```
 
 ## Installation
 
