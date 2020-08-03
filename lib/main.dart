@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trivia/question.dart';
+import 'package:trivia/quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
+QuizBrain quizBrain = new QuizBrain();
 void main() => runApp(Trivia());
 
 class Trivia extends StatelessWidget {
@@ -27,18 +29,86 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Widget> scoreKeeper = [
-    // Icon(Icons.check, color: Colors.green),
+    Icon(Icons.star, color: Colors.orangeAccent),
     // Icon(Icons.close, color: Colors.red),
   ];
 
-  List<Question> questionBank = [
-    Question(question: 'A shark can blink its eyes', answer: true),
-    Question(question: 'Cows sleep standing up', answer: true),
-    Question(question: 'Nemo is a puffer fish', answer: false),
-    Question(question: 'Porcupines can float', answer: true)
-  ];
+  int score = 0;
+  int totalQuestion = quizBrain.totalQuestionNumber();
 
-  int questionCounter = 0;
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = quizBrain.getQuestionAnswer();
+
+    setState(() {
+      if (quizBrain.isFinished() == true) {
+//        //Basic alert from rFlutter
+//        Alert(
+//          context: context,
+//          title: 'Finished!',
+//          desc: 'You\'ve reached the end of the quiz.',
+//        ).show();
+        scoreKeeper.add(Icon(Icons.flag, color: Colors.green));
+
+        var alertStyle = AlertStyle(
+          animationType: AnimationType.fromRight,
+          isCloseButton: false,
+          isOverlayTapDismiss: false,
+          descStyle:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          animationDuration: Duration(milliseconds: 400),
+          backgroundColor: Colors.grey.shade800,
+          alertBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            side: BorderSide(
+              color: Colors.grey.shade900,
+            ),
+          ),
+          titleStyle: TextStyle(
+            color: Colors.white,
+          ),
+        );
+
+        Alert(
+          context: context,
+          style: alertStyle,
+          type: AlertType.none,
+          title: "Finished!",
+          desc: "You\'ve scored : $score / $totalQuestion ",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "Cool!",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
+
+        //reset the question number
+        quizBrain.reset();
+
+        // reset scorekeeper list
+        scoreKeeper = [
+          Icon(Icons.star, color: Colors.orangeAccent),
+        ];
+
+        score = 0;
+      }
+      // Else question is not finished
+      else {
+        if (userPickedAnswer == correctAnswer) {
+          score++;
+          scoreKeeper.add(Icon(Icons.check, color: Colors.green));
+        } else {
+          scoreKeeper.add(Icon(Icons.close, color: Colors.red));
+        }
+      }
+
+      quizBrain.nextQuestion();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +122,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questionBank[questionCounter].questionText,
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -78,18 +148,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                bool correctAns = questionBank[questionCounter].questionAnswer;
-
-                if (correctAns == true) {
-                  print('correct');
-                } else {
-                  print('false');
-                }
-
-                setState(() {
-                  questionCounter++;
-                  scoreKeeper.add(Icon(Icons.check, color: Colors.green));
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -109,18 +168,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                bool correctAns = questionBank[questionCounter].questionAnswer;
-
-                if (correctAns == false) {
-                  print('correct');
-                } else {
-                  print('false');
-                }
-
-                setState(() {
-                  questionCounter++;
-                });
-                //The user picked false.
+                checkAnswer(false);
               },
             ),
           ),
